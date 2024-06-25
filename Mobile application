@@ -1,0 +1,415 @@
+Activity_splash.xml:
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:id="@+id/main"
+    android:background="#F6FAB9">
+
+    <!-- Splash Screen Content -->
+    <LinearLayout
+        android:id="@+id/splashContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_centerInParent="true">
+
+        <ImageView
+            android:id="@+id/logoImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/logo"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp" />
+
+        <TextView
+            android:id="@+id/welcomeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="60sp"
+            android:textColor="@android:color/holo_green_dark"
+            android:text="Welcome!"
+            android:gravity="center"
+            android:singleLine="true"
+            android:ellipsize="none" />
+
+        <TextView
+            android:id="@+id/subTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="30sp"
+            android:textColor="@android:color/holo_green_dark"
+            android:text="Care of Mentally ill Patients!"
+            android:gravity="center"
+            android:singleLine="true"
+            android:ellipsize="none" />
+    </LinearLayout>
+
+    <!-- Chatbot Interface -->
+    <LinearLayout
+        android:id="@+id/chatbotContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/chatOutput"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scrollbars="vertical"
+            android:textSize="16sp"
+            android:padding="8dp" />
+
+        <EditText
+            android:id="@+id/userInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Type your message"
+            android:inputType="text" />
+
+        <Button
+            android:id="@+id/sendButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send" />
+    </LinearLayout>
+
+</RelativeLayout>
+
+
+
+SplachActivity.java: 
+package com.example.myproject;
+
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+public class MainActivity extends AppCompatActivity {
+
+    private static final int SPLASH_DISPLAY_LENGTH = 6000; // 6 seconds
+
+    private LinearLayout splashContent;
+    private LinearLayout chatbotContent;
+    private EditText userInput;
+    private TextView chatOutput;
+    private Button sendButton;
+    private TherapyChatbot chatbot;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+        // Initialize views
+        splashContent = findViewById(R.id.splashContent);
+        chatbotContent = findViewById(R.id.chatbotContent);
+        userInput = findViewById(R.id.userInput);
+        chatOutput = findViewById(R.id.chatOutput);
+        sendButton = findViewById(R.id.sendButton);
+        chatbot = new TherapyChatbot();
+
+        // Set splash screen content
+        ImageView logoImageView = findViewById(R.id.logoImageView);
+        logoImageView.setImageResource(R.drawable.logo);
+
+        TextView welcomeTextView = findViewById(R.id.welcomeTextView);
+        TextView subTextView = findViewById(R.id.subTextView);
+        welcomeTextView.setText("Welcome!");
+        welcomeTextView.setTextSize(60);
+        welcomeTextView.setTextColor(Color.BLACK);
+
+        subTextView.setText("Care of Mentally ill Patients!");
+        subTextView.setTextSize(30);
+        subTextView.setTextColor(Color.BLACK);
+
+        // Navigate to login screen after the splash screen delay
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish(); // Close the splash screen activity
+            }
+        }, SPLASH_DISPLAY_LENGTH);
+
+        // Handle send button click
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String userMessage = userInput.getText().toString();
+                if (!userMessage.isEmpty()) {
+                    chatOutput.append("You: " + userMessage + "\n");
+                    String botResponse = chatbot.getResponse(userMessage);
+                    chatOutput.append("Bot: " + botResponse + "\n");
+                    userInput.setText("");
+                }
+            }
+        });
+    }
+}
+
+Login Activity _ .xml:
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginActivity">
+
+    <TextView
+        android:id="@+id/textViewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@id/editTextUsername"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        android:layout_marginTop="32dp"
+        android:gravity="center"/>
+
+    <EditText
+        android:id="@+id/editTextUsername"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Username"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewTitle"
+        android:layout_marginTop="16dp"
+        android:padding="10dp"
+        android:inputType="text"/>
+
+    <EditText
+        android:id="@+id/editTextPassword"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Password"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editTextUsername"
+        android:layout_marginTop="16dp"
+        android:padding="10dp"
+        android:inputType="textPassword"/>
+
+    <Button
+        android:id="@+id/buttonLogin"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editTextPassword"
+        android:layout_marginTop="16dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+Login activity_Java:
+package com.example.myproject;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class LoginActivity extends AppCompatActivity {
+
+    private EditText editTextUsername;
+    private EditText editTextPassword;
+    private Button buttonLogin;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activitylogin); // 
+
+        editTextUsername = findViewById(R.id.editTextUsername);
+        editTextPassword = findViewById(R.id.editTextPassword);
+        buttonLogin = findViewById(R.id.buttonLogin);
+
+        buttonLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String username = editTextUsername.getText().toString().trim();
+                String password = editTextPassword.getText().toString().trim();
+
+                if (!username.isEmpty() && !password.isEmpty()) {
+                    Intent intent = new Intent(LoginActivity.this, ChatbotActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(LoginActivity.this, "Please enter username and password", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+}
+Activity_chatbot.xml:
+<?xml version=”1.0” encoding=”utf-8”?>
+<RelativeLayout xmlns:android=”http://schemas.android.com/apk/res/android”
+    android:layout_width=”match_parent”
+    android:layout_height=”match_parent”
+    android:padding=”16dp”>
+
+    <EditText
+        android:id=”@+id/userInput”
+        android:layout_width=”match_parent”
+        android:layout_height=”wrap_content”
+        android:layout_alignParentBottom=”true”
+        android:layout_marginBottom=”8dp”
+        android:hint=”Type your message”
+        android:inputType=”text” />
+
+    <Button
+        android:id=”@+id/sendButton”
+        android:layout_width=”wrap_content”
+        android:layout_height=”wrap_content”
+        android:layout_alignParentBottom=”true”
+        android:layout_alignParentEnd=”true”
+        android:layout_marginBottom=”8dp”
+        android:text=”Send” />
+
+    <TextView
+        android:id=”@+id/chatOutput”
+        android:layout_width=”match_parent”
+        android:layout_height=”0dp”
+        android:layout_above=”@id/userInput”
+        android:layout_alignParentTop=”true”
+        android:layout_marginBottom=”16dp”
+        android:layout_marginTop=”16dp”
+        android:padding=”8dp”
+        android:scrollbars=”vertical”
+        android:textSize=”16sp” />
+
+</RelativeLayout>
+
+Activity_Chatbot.java:
+package com.example.myproject;
+
+import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import  ndroid.appcompat.app.AppCompatActivity;
+
+public class ChatbotActivity extends AppCompatActivity {
+
+    private EditText userInput;
+    private Button sendButton;
+    private TextView chatOutput;
+    private TherapyChatbot chatbot;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_chatbot);
+
+        userInput = findViewById(R.id.userInput);
+        sendButton = findViewById(R.id.sendButton);
+        chatOutput = findViewById(R.id.chatOutput);
+        chatbot = new TherapyChatbot();
+
+        sendButton.setOnClickListener(v -> {
+            String userMessage = userInput.getText().toString();
+            if (!userMessage.isEmpty()) {
+                chatOutput.append(“You: “ + userMessage + “\n”);
+                String botResponse = chatbot.getResponse(userMessage);
+                chatOutput.append(“Bot: “ + botResponse + “\n”);
+                userInput.setText(“”);
+            }
+        });
+    }
+}
+package com.example.myproject;
+
+public class TherapyChatbot {
+
+    public String getResponse(String userMessage) {
+        // Simple hardcoded responses for a therapy chatbot
+        switch (userMessage.toLowerCase()) {
+            case “hello”:
+            case “hi”:
+                return “Hello! How are you feeling today?”;
+            case “I’m feeling sad”:
+            case “I’m sad”:
+                return “I’m sorry to hear that. Can you tell me more about why you’re feeling this way?”;
+            case “I’m feeling anxious”:
+            case “I’m anxious”:
+                return “Anxiety can be tough. What specifically is making you feel anxious?”;
+            case “I’m feeling happy”:
+            case “I’m happy”:
+                return “That’s great to hear! What has been making you feel happy?”;
+            case “thank you”:
+            case “thanks”:
+                return “You’re welcome! Is there anything else you want to talk about?”;
+            default:
+                return “I’m here to listen. Please tell me more about how you’re feeling.”;
+        }
+    }
+}
+
+manifest_Code:
+<manifest xmlns:android=”http://schemas.android.com/apk/res/android”
+    package=”com.example.myproject”>
+
+    <application
+        android:allowBackup=”true”
+        android:icon=”@mipmap/ic_launcher”
+        android:label=”@string/app_name”
+        android:roundIcon=”@mipmap/ic_launcher_round”
+        android:supportsRtl=”true”
+        android:theme=”@style/AppTheme”>
+
+        <activity
+            android:name=”.MainActivity”
+            android:exported=”true”>
+            <intent-filter>
+                <action android:name=”android.intent.action.MAIN” />
+                <category android:name=”android.intent.category.LAUNCHER” />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=”.LoginActivity”
+            android:exported=”true” />
+
+        <activity
+            android:name=”.ChatbotActivity”
+            android:exported=”true” />
+    </application>
+</manifest>
+
