@@ -81,7 +81,7 @@ Activity_splash.xml:
 
 </RelativeLayout>
 
-
+-----------------------------------------------------------------------------------------------
 
 SplachActivity.java: 
 package com.example.myproject;
@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 }
-
+-----------------------------------------------------------------------------------------------------
 Login Activity _ .xml:
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -232,7 +232,7 @@ Login Activity _ .xml:
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
-
+-------------------------------------------------------------------------------------------------------------
 Login activity_Java:
 package com.example.myproject;
 
@@ -277,6 +277,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 }
+--------------------------------------------------------------------------------------------------------------
 Activity_chatbot.xml:
 <?xml version=”1.0” encoding=”utf-8”?>
 <RelativeLayout xmlns:android=”http://schemas.android.com/apk/res/android”
@@ -315,7 +316,7 @@ Activity_chatbot.xml:
         android:textSize=”16sp” />
 
 </RelativeLayout>
-
+------------------------------------------------------------------------------------------------------------------
 Activity_Chatbot.java:
 package com.example.myproject;
 
@@ -381,7 +382,7 @@ public class TherapyChatbot {
         }
     }
 }
-
+--------------------------------------------------------------------------------------------------------------
 manifest_Code:
 <manifest xmlns:android=”http://schemas.android.com/apk/res/android”
     package=”com.example.myproject”>
@@ -412,4 +413,30 @@ manifest_Code:
             android:exported=”true” />
     </application>
 </manifest>
+------------------------------------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="purple_200">#BB86FC</color>
+    <color name="purple_500">#6200EE</color>
+    <color name="purple_700">#3700B3</color>
+    <color name="teal_200">#03DAC5</color>
+    <color name="teal_700">#018786</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+</resources>
+------------------------------------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base application theme -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+</resources>
+--------------------------------------------------------------------------------------------------------------
 
